@@ -1,0 +1,86 @@
+Google : s0/3/0 : 103.24.43.8/30
+	 s0/3/1 : 103.24.45.8/30
+	 s0/2/0 : 103.24.32.0/30
+
+Jakarta
+a. JKT-BRANCH = to JKT-CORE1 : 10.10.1.1/30
+		to JKT-CORE3 : 10.10.3.1/29
+		to Google-Core : 103.24.32.1/30
+
+b. JKT-CORE1 =  to JKT-BRANCH : 10.10.1.2/30
+		to JKT-CORE3 : 10.10.2.1/29
+		to-JKT-DIST1 : 10.10.4.1/29
+
+c. JKT-CORE3 =  to JKT-BRANCH = 10.10.3.3/29
+		to JKT-CORE2 = 10.10.5.3/29
+		to JKT-CORE1 = 10.10.2.3/29
+
+d. JKT-CORE2 = 	to JKT-CORE3 = 10.10.5.5/29
+		to JKT-DIST2 = 10.10.6.5/29
+		to JKT-MLS-DIST = 10.10.100.1/30
+
+e. JKT-DIST2 =  to JKT-CORE2 = 10.10.6.6/29
+		to VLAN-SRV = 100.100.100.2/24
+
+f. JKT-DIST1 =	to JKT-CORE1 = 10.10.4.4/29
+		to VLAN-SRV = 100.100.100.1/24
+
+Semarang
+a. SMG-BRANCH = to SMG-DIST1 = 10.20.30.10/30
+		to SMG-DIST2 = 10.20.40.10/30
+
+b. SMG-DIST1  = to SMG-BRANCH = 10.20.30.9/30
+		to SMG-MLS-CORE	= 10.10.125.1/28
+
+c. SMG-DIST2  = to SMG-BRANCH = 10.20.40.9/30
+		to SMG-MLS-CORE = 10.10.125.2/28
+		
+d. SMG-MLS-CORE = VLAN125 = 10.10.125.14/29
+		  to SMG-MLS-DIST ( port-channel 15 ) = 10.10.10.9/29
+
+e. SMG-MLS-DIST = to SMG-MLS-CORE ( Po15 ) = 10.10.10.10/29
+
+Tembalang
+a. TMB-BRANCH = 10.10.45.0/28
+
+Etherchannel
+a. SMG-SW-ACC1 to SMG-MLS-ACC1 = port channel 6 ( PAgP )
+b. SMG-SW-ACC2 to SMG-MLS-ACC1 = port channel 4 ( PAgP )
+c. SMG-SW-ACC2 to SMG-MLS-ACC2 = port channel 2 ( PAgP )
+d. SMG-SW-SRV to SMG-MLS-ACC2 = port channel 3 ( PAgP )
+e. SMG-SW-ACC1 to SMG-MLS-DIST = port channel 10 ( LACP )
+f. SMG-SW-ACC2 to SMG-MLS-DIST = port channel 20 ( PAgP )
+g. JKT-MLS-DIST to JKT-SW-ACC = port channel 1 ( LACP )
+h. JKT-MLS-DIST to JKT-SW-ACC1 = port channel 5 ( PAgP )
+
+VTP
+vtp domain = Techcomfest2K19
+vtp password = pccPOLINES2019!
+
+VLAN
+VLAN100 = Akutansi 
+VLAN15 = Tekhnik Sipil
+VLAN20 = Perbankan
+VLAN25 = Tekhnik Telekomunikasi ( 10.10.25.128/29 )
+VLAN30 = Tekhnik Informatika ( 10.10.30.96/28 )
+VLAN35 = Tekhnik Listrik ( 10.10.35.0/29 )
+
+DHCP Relay
+untuk VLAN25, VLAN30, VLAN35
+
+OSPF
+branch Semarang dengan ID 2019 dan area 1234, dan branch jakarta dengan ID 1234 dan area backbone
+
+Tunnel
+Tunnel 10 = 10.10.150.0/30
+tunnel 20 = 10.10.160.0/30
+tunnel 30 = 10.10.170.0/30
+
+static
+static via tunnel
+
+High Availaibility
+buat agar vlan 100 mempunyai gateway yang sama yaitu 100.100.100.254
+
+NAT
+ketika akses 103.24.45.10 redirect ke TMB-SRV
